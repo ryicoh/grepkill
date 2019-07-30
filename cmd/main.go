@@ -1,36 +1,28 @@
 package main
 
 import (
-  "fmt"
-  "github.com/mitchellh/go-ps"
-  "math"
+	"fmt"
+	"regexp"
+
+	"github.com/mitchellh/go-ps"
+	flag "github.com/spf13/pflag"
 )
 
 func main() {
+	pattern := flag.StringP("pattern", "p", "", "pattern")
+	flag.Parse()
 
-  find := func(done <-chan interface{}, id <-chan interface{}) <-chan ps.Process {
-    p := make(chan ps.Process)
-    go func() {
-      for i range id {
-        p, err := ps.FindProcess(i)
-        if err != nil {
-          log.Fatal(err)
-        }
+	done := make(chan interface{})
+	defer close(done)
 
-        if p != nil {
-          fmt.Println(p, err)
-        }
-      }
-    }
-  }
+	processCh := grepkill.generator(done)
 
-  done := make(chan interface{})
-  defer close(done)
+	r := regexp.MustCompile(*pattern)
+	matchedCh := grepkill.grep(done, processCh, r)
 
-  id := make(chan int)
-  p := find(done, id)
-
-  for i := 0; i < int(math.Pow(2, 16)); i++ {
-    id := 
-  }
+	matchedProcessList := []ps.Process{}
+	for p := range matchedCh {
+		matchedProcessList = append(matchedProcessList, p)
+		fmt.Printf("%#v\n", p)
+	}
 }
