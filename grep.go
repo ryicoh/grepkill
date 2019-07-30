@@ -6,7 +6,7 @@ import (
 	"github.com/mitchellh/go-ps"
 )
 
-func grep(done <-chan interface{}, process <-chan ps.Process, r *regexp.Regexp) <-chan ps.Process {
+func Grep(done <-chan interface{}, process <-chan ps.Process, r *regexp.Regexp) <-chan ps.Process {
 	matched := make(chan ps.Process, 128)
 
 	go func() {

@@ -6,7 +6,7 @@ import (
 	"github.com/mitchellh/go-ps"
 )
 
-func generator(done <-chan interface{}) <-chan ps.Process {
+func GenerateProcess(done <-chan interface{}) <-chan ps.Process {
 	process := make(chan ps.Process, 128)
 
 	processList, err := ps.Processes()
